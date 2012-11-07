@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<!-- HEAD -->
+	</head>
+	
+		<body>
+			<!-- NEW PAGE -->
+			<div data-role="page" id="editPage">
+			
+			<!-- HEADER -->
+			<div data-role="header">
+				<h1>Neuer Termin</h1>
+				<a data-role="button" onclick='$.mobile.changePage("index.html", { transition: "slideup"});'
+				 data-icon="home">Back</a>
+			</div>
+			
+			<!-- PAGES CONTENT -->
+			<div data-role="content">
+			
+				<!--  -->
+				<form  value="">
+				
+					<!--  -->
+					<div data-role="fieldcontain">
+						<label for="title">Titel</label> 
+						<input type="text" id="titleLabel" class="text_input" >
+				
+						<label for="date">Datum</label>
+						<input type="text" id="dateLabel" class="text_input" >
+					</div>
+				
+					<!--  -->
+					<div data-role="fieldcontain">
+						<input type="button" id="SubmitButton" onclick="addEntry();"
+							data-theme="a" value="Termin ablegen">
+					</div>
+				</form>
+			</div>
+		
+		<!-- FOOTER -->
+		<div data-role="footer"  data-position="fixed">
+			<!-- Linked to index.html -->
+			
+		</div>
+
+		</div>
+		
+			
+		</body>
+</html>
