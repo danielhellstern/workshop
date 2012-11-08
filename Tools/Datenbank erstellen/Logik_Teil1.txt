@@ -1,0 +1,22 @@
+<script>
+	document.addEventListener("deviceready", onDeviceReady, false);
+
+	function onDeviceReady() {
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(populateDB, errorCB, successCB);
+	}
+
+	function populateDB(tx) {
+		tx.executeSql('CREATE TABLE IF NOT EXISTS Termine (id INTEGER PRIMARY KEY AUTOINCREMENT, Termin TEXT NOT NULL, Datum TEXT NOT NULL)');
+		tx.executeSql('INSERT INTO Termine(Termin,Datum) VALUES ("Termin 1", "Dienstag nächs. Woche")');
+		tx.executeSql('INSERT INTO Termine(Termin,Datum) VALUES ("Termin 2", "Mittwoch nächs. Woche")');
+	}
+
+	function errorCB(tx, err) {
+		alert("Error processing SQL: " + err);
+	}
+
+	function successCB() {
+		alert("Datenbank erfolgreich erstellt");
+	}
+</script>

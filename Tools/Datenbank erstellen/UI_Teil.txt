@@ -1,0 +1,27 @@
+	<div data-role="page" id="terminPage">
+
+		<div data-role="header">
+			<h1>Kundentermine</h1>
+			<a href="#" data-icon="forward" class="ui-btn-right">Next</a>
+		</div>
+
+		<div data-role="content">
+			<ul id="Terminliste" data-theme="c">
+			
+			</ul>
+			
+			<a href="#erstelleTerminPage" data-role="button" style="margin-top: 35px">Erstellen</a>
+			
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#terminPage" data-icon="home" class="ui-btn-active ui-state-persist">Termine</a></li>
+					<li><a href="#" data-icon="star">RSS</a></li>
+					<li><a href="#" data-icon="gear">Chart</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>

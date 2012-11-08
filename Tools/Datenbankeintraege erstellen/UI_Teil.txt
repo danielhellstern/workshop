@@ -1,0 +1,32 @@
+	<div data-role="page" id="erstelleTerminPage">
+
+		<div data-role="header">
+			<h1>Erstelle Termin</h1>
+			<a href="#terminPage" data-icon="back" class="ui-btn-left">Back</a>
+		</div>
+
+		<div data-role="content">
+			<div data-role="fieldcontain">
+			
+				<label for="titelLabel">Titel</label>
+				<input type="text" id="titelLabel">
+				
+				<label for="datumLabel">Datum</label>
+				<input type="text" id="datumLabel">
+				
+				<a href="#" data-role="button" onclick="speichereTermin();" style="margin-top: 35px">Erstellen</a>
+			</div>
+			
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#terminPage" data-icon="home" class="ui-btn-active ui-state-persist">Termine</a></li>
+					<li><a href="#rssPage" data-icon="star">RSS</a></li>
+					<li><a href="#" data-icon="gear">Chart</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>

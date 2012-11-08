@@ -1,0 +1,30 @@
+<script>
+	function successCB() {
+		alert("Datenbank erfolgreich erstellt");
+
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(queryDB, errorCB);
+	}
+
+	function queryDB(tx) {
+		tx.executeSql('SELECT * FROM Termine', [], querySuccess, errorCB);
+	}
+
+	function querySuccess(tx, results) {
+
+		$('#Terminliste').empty();
+
+		var len = results.rows.length;
+
+		for ( var i = 0; i < len; i++) {
+
+			var row = results.rows.item(i);
+
+			$('#Terminliste').append(
+					'<li><a href="#"><h3 class="ui-li-heading">'+ row['Termin']+ '</h3><p class="ui-li-desc">Datum '+ row['Datum'] + '</p></a></li>');
+		}
+		;
+
+		$('#Terminliste').listview();
+	}
+</script>

@@ -1,0 +1,36 @@
+	function speichereTermin() {
+	
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(populateDBSave, errorCB, successCBSave);
+	}
+
+
+	function populateDBSave(tx) {
+		
+		tx.executeSql('CREATE TABLE IF NOT EXISTS Termine (id INTEGER PRIMARY KEY AUTOINCREMENT, Termin TEXT NOT NULL, Datum TEXT NOT NULL)');
+		tx.executeSql('INSERT INTO Termine(Termin,Datum) VALUES (\"'+ String($("#titelLabel").val()) + '\",\"'+ String($("#datumLabel").val()) + '\")');
+	}
+	
+	function successCBSave() {
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(queryDBSave, errorCB);
+		alert("Eintrag erstellt");
+	}
+
+	function queryDBSave(tx) {
+
+		tx.executeSql('SELECT * FROM Termine', [], querySuccessSave, errorCB);
+	}
+ 
+	function querySuccessSave(tx, result) {
+		
+		var len = result.rows.length;
+		
+		var row = result.rows.item(len - 1);
+		
+		$('#Terminliste').append('<li ><a href="#" ><h3 class="ui-li-heading" >' + row['Termin']
+						+ '</h3><p class="ui-li-desc" >Datum: ' + row['Datum']
+						+ '</p></a></li>');
+		
+		$('#Terminliste').listview("refresh");
+}

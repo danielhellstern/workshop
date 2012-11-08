@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+<script type="text/javascript" src="js/jquery.zrssfeed.min.js"></script>
+
+<script>
+	document.addEventListener("deviceready", onDeviceReady, false);
+
+	function onDeviceReady(){
+	
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(populateDB, errorCB, successCB);
+	}
+
+	function populateDB(tx) {
+		tx.executeSql('CREATE TABLE IF NOT EXISTS Termine (id INTEGER PRIMARY KEY AUTOINCREMENT, Termin TEXT NOT NULL, Datum TEXT NOT NULL)');
+		//tx.executeSql('INSERT INTO Termine(Termin,Datum) VALUES ("Termin 1", "Dienstag nächs. Woche")');
+	}
+
+	function errorCB(tx, err) {
+		alert("Error processing SQL: " + err);
+	}
+
+	function successCB() {
+		alert("Datenbank erfolgreich erstellt");
+
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(queryDB, errorCB);
+	}
+
+	function queryDB(tx) {
+		tx.executeSql('SELECT * FROM Termine', [], querySuccess, errorCB);
+	}
+
+	function querySuccess(tx, results) {
+
+		$('#Terminliste').empty();
+
+		var len = results.rows.length;
+
+		for ( var i = 0; i < len; i++) {
+
+			var row = results.rows.item(i);
+
+			$('#Terminliste').append('<li><a href="#"><h3 class="ui-li-heading">'+ row['Termin']+ '</h3><p class="ui-li-desc">Datum '+ row['Datum'] + '</p></a></li>');
+		}
+		;
+
+		$('#Terminliste').listview();
+	}
+</script>
+
+</head>
+<body>
+
+	<div data-role="page" id="terminPage">
+
+		<div data-role="header">
+			<h1>Kundentermine</h1>
+			<a href="#" data-icon="forward" class="ui-btn-right">Next</a>
+		</div>
+
+		<div data-role="content">
+			<ul id="Terminliste" data-theme="c">
+			
+			</ul>
+			
+			<a href="#erstelleTerminPage" data-role="button" style="margin-top: 35px">Erstellen</a>
+			
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#terminPage" data-icon="home" class="ui-btn-active ui-state-persist">Termine</a></li>
+					<li><a href="#rssPage" data-icon="star">RSS</a></li>
+					<li><a href="#" data-icon="gear">Chart</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	
+<script>
+
+	function speichereTermin() {
+	
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(populateDBSave, errorCB, successCBSave);
+	}
+
+
+	function populateDBSave(tx) {
+		
+		tx.executeSql('CREATE TABLE IF NOT EXISTS Termine (id INTEGER PRIMARY KEY AUTOINCREMENT, Termin TEXT NOT NULL, Datum TEXT NOT NULL)');
+		tx.executeSql('INSERT INTO Termine(Termin,Datum) VALUES (\"'+ String($("#titelLabel").val()) + '\",\"'+ String($("#datumLabel").val()) + '\")');
+	}
+	
+	function successCBSave() {
+		var db = window.openDatabase("Termine", "1.0", "Termine", 1000000);
+		db.transaction(queryDBSave, errorCB);
+		alert("Eintrag erstellt");
+	}
+
+	function queryDBSave(tx) {
+
+		tx.executeSql('SELECT * FROM Termine', [], querySuccessSave, errorCB);
+	}
+ 
+	function querySuccessSave(tx, result) {
+		
+		var len = result.rows.length;
+		
+		var row = result.rows.item(len - 1);
+		
+		$('#Terminliste').append('<li ><a href="#" ><h3 class="ui-li-heading" >' + row['Termin']
+						+ '</h3><p class="ui-li-desc" >Datum: ' + row['Datum']
+						+ '</p></a></li>');
+		
+		$('#Terminliste').listview("refresh");
+}
+</script>
+
+	<div data-role="page" id="erstelleTerminPage">
+
+		<div data-role="header">
+			<h1>Erstelle Termin</h1>
+			<a href="#terminPage" data-icon="back" class="ui-btn-left">Back</a>
+		</div>
+
+		<div data-role="content">
+			<div data-role="fieldcontain">
+			
+				<label for="titelLabel">Titel</label>
+				<input type="text" id="titelLabel">
+				
+				<label for="datumLabel">Datum</label>
+				<input type="text" id="datumLabel">
+				
+				<a href="#" data-role="button" onclick="speichereTermin();" style="margin-top: 35px">Erstellen</a>
+			</div>
+			
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#terminPage" data-icon="home" class="ui-btn-active ui-state-persist">Termine</a></li>
+					<li><a href="#rssPage" data-icon="star">RSS</a></li>
+					<li><a href="#" data-icon="gear">Chart</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+<style type="text/css">
+		#rssList { width:300px; }
+		.rssBody ul, .rssRow {
+			margin-left: 0;
+			padding-left: 0;
+			list-style: none;
+		}
+</style>
+
+
+<script>
+	$('#rssPage').live('pagecreate', function() {
+	$('#rssList').rssfeed('http://www.manager-magazin.de/news/index.rss',{
+		limit: 10
+		}); 
+	}); 
+
+</script>
+
+
+	<div data-role="page" id="rssPage">
+
+		<div data-role="header">
+			<h1>RSS</h1>
+			<a href="#terminPage" data-icon="back" class="ui-btn-left">Back</a>
+		</div>
+
+		<div data-role="content">
+			<div id="rssList" ></div>
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#terminPage" data-icon="home">Termine</a></li>
+					<li><a href="#rssPage" data-icon="star" class="ui-btn-active ui-state-persist">RSS</a></li>
+					<li><a href="#" data-icon="gear">Chart</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+</html>
